@@ -1,13 +1,22 @@
 import socket
 import time
 import os
+import threading
+import json
 
 class Server:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.ip = ""
-        self.port = 0
-
+        self.ip = "127.0.0.1"
+        self.port = 6666
+        
+    def listen(self):
+        self.sock.bind((self.ip, self.port))
+        print("Started listening.")
+        while True:
+            data, addr = self.sock.recvfrom(1024)
+            print(addr,"message:",data,time.time())
+            
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         
@@ -16,7 +25,6 @@ class Server:
         self.ip = input("Enter server IP (default 127.0.0.1): ") or "127.0.0.1"
         self.port = int(input("Enter server port (default 6666): ") or 6666)
         print(f"Configured to {self.ip}:{self.port}")
-        time.sleep(1.5)
 
     def menu(self):
         while True:
@@ -28,8 +36,10 @@ class Server:
             choice = input("Choose: ")
             if choice == "1":
                 self.configure()
+                time.sleep(1.5)
             elif choice == "2":
-                pass
+                threading.Thread(target=self.listen).start()
+                time.sleep(1.5)
             elif choice == "3":
                 exit()
                 break
