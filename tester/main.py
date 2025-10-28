@@ -1,13 +1,25 @@
 import socket
 import time
 import os
+import threading
+import json
 
 class Tester:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.ip = ""
-        self.port = 0
-
+        self.ip = "127.0.0.1"
+        self.port = 6666
+        
+    def send_message(self, msg):
+        self.sock.sendto(json.dumps(msg).encode(), (self.ip, self.port))
+    
+    def generate_messages(self):
+        print("Started generating random messages.")
+        while True:
+            message = {"device": "ThermoNode"+"-"+"tokenlol", "timestamp": int(time.time()), "low_battery": True, "data": "hi", "crc": ""}
+            self.send_message(message)
+            time.sleep(1)
+            
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         
@@ -16,7 +28,6 @@ class Tester:
         self.ip = input("Enter tester IP (default 127.0.0.1): ") or "127.0.0.1"
         self.port = int(input("Enter tester port (default 6666): ") or 6666)
         print(f"Configured to {self.ip}:{self.port}")
-        time.sleep(1.5)
 
     def menu(self):
         while True:
@@ -28,8 +39,10 @@ class Tester:
             choice = input("Choose: ")
             if choice == "1":
                 self.configure()
+                time.sleep(1.5)
             elif choice == "2":
-                pass
+                threading.Thread(target=self.generate_messages).start()
+                time.sleep(1.5)
             elif choice == "3":
                 exit()
                 break
