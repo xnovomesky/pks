@@ -47,8 +47,7 @@ class Server:
 
             elif message['type'] == "data":
                 if message['device'] not in self.tokens or message['token'] != self.tokens[message['device']]:
-                    print(message)
-                    print("wrong token gg")
+                    #print("wrong token gg")
                     self.send_message({"type": "invalid_token", "device": message['device'], "timestamp": int(time.time()), "crc": ""}, addr)
                     continue
 
