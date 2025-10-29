@@ -59,7 +59,7 @@ class Server:
                     self.send_message({"type": "invalid_token", "device": message['device'], "timestamp": int(time.time()), "battery_low": False, "crc": ""}, addr)
                     continue
 
-                if  message['battery_low']:
+                if  message['battery_low'] == False:
                     print(f"INFO: {message['device']} DATA: {message['data']}")
                 else:
                     print(f"WARNING: LOW BATTERY {message['device']} DATA: {message['data']}")
