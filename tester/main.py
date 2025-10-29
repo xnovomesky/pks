@@ -20,6 +20,7 @@ class Tester:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.ip = "127.0.0.1"
         self.port = 6666
+        self.running = False
         self.calculator =Calculator(Crc8.CCITT)
         self.devices = []
         self.devices.append(Device("ThermoNode"))
@@ -47,14 +48,47 @@ class Tester:
             resp = json.loads(data.decode())
             if resp['type'] == "registration-token":
                 device.token = resp['token']
+                print("recieved token:" ,resp['token'])
         
         print("Started generating random messages.")
-        while True:
+        self.running = True
+        while self.running:
             for device in self.devices:
                 message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": "hi", "crc": ""}
                 self.send_message(message)
                 time.sleep(1)
-            
+    def custom_message(self):
+        if 1:
+            self.clear_screen()
+            print("Select sensor:")
+            print("1. ThermoNode")
+            print("2. WindSense")
+            print("3. RainDetect")
+            print("4. AirQualityBox")
+            choice = input("Choose: ")
+          
+            if choice == "1":
+                device = next(d for d in self.devices if d.type == "ThermoNode")
+            elif choice == "2":
+                device = next(d for d in self.devices if d.type == "WindSense")
+            elif choice == "3":
+                device = next(d for d in self.devices if d.type == "RainDetect")
+            elif choice == "4":
+                device = next(d for d in self.devices if d.type == "AirQualityBox")
+            self.clear_screen()
+            print("Set low battery?")
+            print("1. True")
+            print("2. False")
+            choice = input("Choose: ")
+          
+            if choice == "1":
+                battery_low = True
+            elif choice == "2":
+                battery_low = False
+
+            message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": battery_low, "data": "hi", "crc": ""}
+            self.send_message(message)
+            print("Sending custom message")
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         
@@ -66,20 +100,29 @@ class Tester:
 
     def menu(self):
         while True:
-            self.clear_screen()
+            
             print("Tester Menu:")
             print("1. Configure IP/Port")
-            print("2. Generate Messages")
+            print("2. Generate Messages", ("[Running]" if self.running else "[Stopped]"))
             print("3. Custom Message")
             print("4. Exit")
             choice = input("Choose: ")
             if choice == "1":
                 self.configure()
                 time.sleep(1.5)
+                self.clear_screen()
             elif choice == "2":
-                threading.Thread(target=self.generate_messages).start()
+                if self.running:
+                    print("Stopped gejerating messages")
+                    self.running = False
+                else:
+                    threading.Thread(target=self.generate_messages).start()
                 time.sleep(1.5)
             elif choice == "3":
+                self.custom_message()
+                time.sleep(1.5)
+                self.clear_screen()
+            elif choice == "4":
                 exit()
                 break
 
