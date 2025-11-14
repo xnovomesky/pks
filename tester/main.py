@@ -157,8 +157,8 @@ class Tester:
         
     def configure(self):
         self.clear_screen()
-        self.ip = input("Enter tester IP (default 127.0.0.1): ") or "127.0.0.1"
-        self.port = int(input("Enter tester port (default 6666): ") or 6666)
+        self.ip = input("Enter server IP (default 127.0.0.1): ") or "127.0.0.1"
+        self.port = int(input("Enter server port (default 6666): ") or 6666)
         print(f"Configured to {self.ip}:{self.port}")
 
     def lissen(self):
@@ -171,7 +171,8 @@ class Tester:
                 device.token = message['token']
                 #print("recieved token:" ,message['token'])
             if message['type'] == "invalid_token":
-                #print("invalid token on device:",message['device'])
+                device = next(d for d in self.devices if d.type == message['device'])
+                print("invalid token on device:",message['device'])
                 message = {"type": "registration", "device": device.type, "timestamp": int(time.time()), "battery_low": False, "crc": ""}
                 self.send_message(message)
             if message['type'] == "resend":
