@@ -3,7 +3,6 @@ import time
 import os
 import threading
 import json
-import random
 from crc import Calculator, Crc8
 
 class Server:
@@ -42,8 +41,8 @@ class Server:
             if message['type'] == "registration":
                 token = message['device'] + "-" + str(message['timestamp'])
                 self.tokens[message['device']] = token
-                print(f"INFO: {message['device']} REGISTERED at {message['timestamp']} ",addr)
-                self.send_message({"type": "token", "device": message['device'], "token": token, "timestamp": int(time.time()), "battery_low": False, "crc": ""}, addr)
+                print(f"INFO: {message['device']} REGISTERED at {message['timestamp']} ")
+                self.send_message({"type": "token", "device": message['device'], "token": token, "timestamp": int(time.time()), "crc": ""}, addr)
 
             elif message['type'] == "data":
                 if message['device'] not in self.tokens or message['token'] != self.tokens[message['device']]:
@@ -53,10 +52,10 @@ class Server:
 
                 if  message['battery_low'] == False:
                     print(f"{message['timestamp']} - {message['device']} ")
-                    print("; ".join([f"{k}: {v}" for k, v in message['data'].items()]))
+                    print(" ".join([f"{k}: {v};" for k, v in message['data'].items()]))
                 else:
                     print(f"{message['timestamp']} - WARNING: LOW BATTERY {message['device']} ")
-                    print("; ".join([f"{k}: {v}" for k, v in message['data'].items()]))
+                    print(" ".join([f"{k}: {v};" for k, v in message['data'].items()]))
 
                 if message['device'] in self.no_ack_list and self.no_ack_list[message['device']] > 0:
                     self.no_ack_list[message['device']] -= 1
