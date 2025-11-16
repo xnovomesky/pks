@@ -13,6 +13,7 @@ class Device:
         self.battery_low = False
         self.last_message = ""
         self.last_message_ack = False
+        self.stop = False
 
 class Tester:
     def __init__(self):
@@ -22,6 +23,7 @@ class Tester:
         self.port = 6666
         self.running = False
         self.calculator =Calculator(Crc8.CCITT)
+        self.verify_count = {}
         self.devices = []
         self.devices.append(Device("ThermoNode"))
         self.devices.append(Device("WindSense"))
@@ -58,16 +60,17 @@ class Tester:
                         data = {"rainfall": round(random.uniform(0, 500), 1), "soil_moisture": round(random.uniform(0, 100), 1), "flood_risk": random.randint(0, 3), "rain_duration": random.randint(0, 60)}
                     elif device.type == "AirQualityBox":
                         data = {"co2": random.randint(300, 5000), "ozone": round(random.uniform(0, 500), 1), "air_quality_index": random.randint(0, 500)}
-
-                    message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": data, "crc": ""}
-                    device.last_message = message
-                    self.send_message(message)
-                    time.sleep(1)
-                    while device.last_message_ack == False and self.running:
-                        #print("didnt got ack, resending")
+                    
+                    if device.stop == False:
+                        message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": data, "crc": ""}
+                        device.last_message = message
                         self.send_message(message)
                         time.sleep(1)
-                    device.last_message_ack = False
+                        while device.last_message_ack == False and self.running:
+                            #print("didnt got ack, resending")
+                            self.send_message(message)
+                            time.sleep(1)
+                        device.last_message_ack = False
             time.sleep(10)
             
     def custom_message(self):
@@ -151,6 +154,30 @@ class Tester:
             message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": data, "crc": ""}
             device.last_message = message
             self.send_message(message,True)
+    
+    def test_activity(self):
+        if 1:
+            self.clear_screen()
+            print("Select sensor:")
+            print("1. ThermoNode")
+            print("2. WindSense")
+            print("3. RainDetect")
+            print("4. AirQualityBox")
+            choice = input("Choose: ")
+          
+            if choice == "1":
+                device = next(d for d in self.devices if d.type == "ThermoNode")
+                device.stop = True
+            elif choice == "2":
+                device = next(d for d in self.devices if d.type == "WindSense")
+                device.stop = True
+            elif choice == "3":
+                device = next(d for d in self.devices if d.type == "RainDetect")
+                device.stop = True
+            elif choice == "4":
+                device = next(d for d in self.devices if d.type == "AirQualityBox")
+                device.stop = True
+            
             
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -181,6 +208,16 @@ class Tester:
             if message['type'] == "ack":
                 device = next(d for d in self.devices if d.type == message['device'])
                 device.last_message_ack = True
+            if message['type'] == "verify":
+                #print("recieved verify")
+                device = next(d for d in self.devices if d.type == message['device'])
+                self.verify_count[device.type] = self.verify_count.get(device.type, 0) + 1
+                if self.verify_count[device.type] >= 3:
+                    message = {"type": "verify_response", "device": device.type, "token": device.token, "timestamp": int(time.time()), "crc": ""}
+                    self.send_message(message)
+                    #print("RESPONSE verify")
+                    device.stop = False
+                    self.verify_count[device.type] = 0
                 
     def menu(self):
         threading.Thread(target=self.lissen).start()
@@ -191,7 +228,8 @@ class Tester:
             print("2. Generate Messages", ("[Running]" if self.running else "[Stopped]"))
             print("3. Custom Message")
             print("4. Introduce Error")
-            print("5. Exit")
+            print("5. kontrola mechanizmu aktívnosti senzora")
+            print("6. Exit")
             choice = input("Choose: ")
             if choice == "1":
                 self.configure()
@@ -211,6 +249,10 @@ class Tester:
                 time.sleep(1.5)
                 self.clear_screen()
             elif choice == "5":
+                self.test_activity()
+                time.sleep(1.5)
+                self.clear_screen()
+            elif choice == "3":
                 exit()
                 break
 
