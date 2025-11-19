@@ -74,59 +74,58 @@ class Tester:
             time.sleep(10)
             
     def custom_message(self):
-        if 1:
-            self.clear_screen()
-            print("Select sensor:")
-            print("1. ThermoNode")
-            print("2. WindSense")
-            print("3. RainDetect")
-            print("4. AirQualityBox")
-            choice = input("Choose: ")
+        self.clear_screen()
+        print("Select sensor:")
+        print("1. ThermoNode")
+        print("2. WindSense")
+        print("3. RainDetect")
+        print("4. AirQualityBox")
+        choice = input("Choose: ")
           
-            if choice == "1":
-                device = next(d for d in self.devices if d.type == "ThermoNode")
-            elif choice == "2":
-                device = next(d for d in self.devices if d.type == "WindSense")
-            elif choice == "3":
-                device = next(d for d in self.devices if d.type == "RainDetect")
-            elif choice == "4":
-                device = next(d for d in self.devices if d.type == "AirQualityBox")
+        if choice == "1":
+            device = next(d for d in self.devices if d.type == "ThermoNode")
+        elif choice == "2":
+            device = next(d for d in self.devices if d.type == "WindSense")
+        elif choice == "3":
+            device = next(d for d in self.devices if d.type == "RainDetect")
+        elif choice == "4":
+            device = next(d for d in self.devices if d.type == "AirQualityBox")
                 
-            self.clear_screen()
-            print("Set low battery?")
-            print("1. True")
-            print("2. False")
-            choice = input("Choose: ")
-            if choice == "1":
-                battery_low = True
-            elif choice == "2":
-                battery_low = False
+        self.clear_screen()
+        print("Set low battery?")
+        print("1. True")
+        print("2. False")
+        choice = input("Choose: ")
+        if choice == "1":
+            battery_low = True
+        elif choice == "2":
+            battery_low = False
                 
-            self.clear_screen()
-            data = {}
-            if device.type == "ThermoNode":
-                data["temperature"] = float(input("temperature (-50.0 to 60.0): "))
-                data["humidity"] = float(input("humidity (0.0 to 100.0): "))
-                data["dew_point"] = float(input("dew_point (-50.0 to 60.0): "))
-                data["pressure"] = float(input("pressure (800.00 to 1100.00): "))
-            elif device.type == "WindSense":
-                data["wind_speed"] = float(input("wind_speed (0.0 to 50.0): "))
-                data["wind_gust"] = float(input("wind_gust (0.0 to 70.0): "))
-                data["wind_direction"] = int(input("wind_direction (0 to 359): "))
-                data["turbulence"] = float(input("turbulence (0.0 to 1.0): "))
-            elif device.type == "RainDetect":
-                data["rainfall"] = float(input("rainfall (0.0 to 500.0): "))
-                data["soil_moisture"] = float(input("soil_moisture (0.0 to 100.0): "))
-                data["flood_risk"] = int(input("flood_risk (0 to 3): "))
-                data["rain_duration"] = int(input("rain_duration (0 to 60): "))
-            elif device.type == "AirQualityBox":
-                data["co2"] = int(input("co2 (300 to 5000): "))
-                data["ozone"] = float(input("ozone (0.0 to 500.0): "))
-                data["air_quality_index"] = int(input("air_quality_index (0 to 500): "))
+        self.clear_screen()
+        data = {}
+        if device.type == "ThermoNode":
+            data["temperature"] = float(input("temperature (-50.0 to 60.0): "))
+            data["humidity"] = float(input("humidity (0.0 to 100.0): "))
+            data["dew_point"] = float(input("dew_point (-50.0 to 60.0): "))
+            data["pressure"] = float(input("pressure (800.00 to 1100.00): "))
+        elif device.type == "WindSense":
+            data["wind_speed"] = float(input("wind_speed (0.0 to 50.0): "))
+            data["wind_gust"] = float(input("wind_gust (0.0 to 70.0): "))
+            data["wind_direction"] = int(input("wind_direction (0 to 359): "))
+            data["turbulence"] = float(input("turbulence (0.0 to 1.0): "))
+        elif device.type == "RainDetect":
+            data["rainfall"] = float(input("rainfall (0.0 to 500.0): "))
+            data["soil_moisture"] = float(input("soil_moisture (0.0 to 100.0): "))
+            data["flood_risk"] = int(input("flood_risk (0 to 3): "))
+            data["rain_duration"] = int(input("rain_duration (0 to 60): "))
+        elif device.type == "AirQualityBox":
+            data["co2"] = int(input("co2 (300 to 5000): "))
+            data["ozone"] = float(input("ozone (0.0 to 500.0): "))
+            data["air_quality_index"] = int(input("air_quality_index (0 to 500): "))
 
-            message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": battery_low, "data": data, "crc": ""}
-            self.send_message(message)
-            print("Sending custom message")
+        message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": battery_low, "data": data, "crc": ""}
+        self.send_message(message)
+        print("Sending custom message")
             
     def test_error(self):
         if 1:
@@ -258,3 +257,4 @@ class Tester:
 
 tester = Tester()
 tester.menu()
+
