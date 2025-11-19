@@ -128,31 +128,30 @@ class Tester:
         print("Sending custom message")
             
     def test_error(self):
-        if 1:
-            self.clear_screen()
-            print("Select sensor:")
-            print("1. ThermoNode")
-            print("2. WindSense")
-            print("3. RainDetect")
-            print("4. AirQualityBox")
-            choice = input("Choose: ")
+        self.clear_screen()
+        print("Select sensor:")
+        print("1. ThermoNode")
+        print("2. WindSense")
+        print("3. RainDetect")
+        print("4. AirQualityBox")
+        choice = input("Choose: ")
           
-            if choice == "1":
-                device = next(d for d in self.devices if d.type == "ThermoNode")
-                data = {"temperature": round(random.uniform(-50, 60), 1), "humidity": round(random.uniform(0, 100), 1), "dew_point": round(random.uniform(-50, 60), 1), "pressure": round(random.uniform(800, 1100), 2)}
-            elif choice == "2":
-                device = next(d for d in self.devices if d.type == "WindSense")
-                data = {"wind_speed": round(random.uniform(0, 50), 1), "wind_gust": round(random.uniform(0, 70), 1), "wind_direction": random.randint(0, 359), "turbulence": round(random.uniform(0, 1), 1)}
-            elif choice == "3":
-                device = next(d for d in self.devices if d.type == "RainDetect")
-                data = {"rainfall": round(random.uniform(0, 500), 1), "soil_moisture": round(random.uniform(0, 100), 1), "flood_risk": random.randint(0, 3), "rain_duration": random.randint(0, 60)}
-            elif choice == "4":
-                device = next(d for d in self.devices if d.type == "AirQualityBox")
-                data = {"co2": random.randint(300, 5000), "ozone": round(random.uniform(0, 500), 1), "air_quality_index": random.randint(0, 500)}
+        if choice == "1":
+            device = next(d for d in self.devices if d.type == "ThermoNode")
+            data = {"temperature": round(random.uniform(-50, 60), 1), "humidity": round(random.uniform(0, 100), 1), "dew_point": round(random.uniform(-50, 60), 1), "pressure": round(random.uniform(800, 1100), 2)}
+        elif choice == "2":
+            device = next(d for d in self.devices if d.type == "WindSense")
+            data = {"wind_speed": round(random.uniform(0, 50), 1), "wind_gust": round(random.uniform(0, 70), 1), "wind_direction": random.randint(0, 359), "turbulence": round(random.uniform(0, 1), 1)}
+        elif choice == "3":
+            device = next(d for d in self.devices if d.type == "RainDetect")
+            data = {"rainfall": round(random.uniform(0, 500), 1), "soil_moisture": round(random.uniform(0, 100), 1), "flood_risk": random.randint(0, 3), "rain_duration": random.randint(0, 60)}
+        elif choice == "4":
+            device = next(d for d in self.devices if d.type == "AirQualityBox")
+            data = {"co2": random.randint(300, 5000), "ozone": round(random.uniform(0, 500), 1), "air_quality_index": random.randint(0, 500)}
             
-            message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": data, "crc": ""}
-            device.last_message = message
-            self.send_message(message,True)
+        message = {"device": device.type,"type": "data", "token": device.token, "timestamp": int(time.time()), "battery_low": False, "data": data, "crc": ""}
+        device.last_message = message
+        self.send_message(message,True)
     
     def test_activity(self):
         if 1:
@@ -257,4 +256,5 @@ class Tester:
 
 tester = Tester()
 tester.menu()
+
 
