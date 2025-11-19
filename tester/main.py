@@ -154,27 +154,26 @@ class Tester:
         self.send_message(message,True)
     
     def test_activity(self):
-        if 1:
-            self.clear_screen()
-            print("Select sensor:")
-            print("1. ThermoNode")
-            print("2. WindSense")
-            print("3. RainDetect")
-            print("4. AirQualityBox")
-            choice = input("Choose: ")
+        self.clear_screen()
+        print("Select sensor:")
+        print("1. ThermoNode")
+        print("2. WindSense")
+        print("3. RainDetect")
+        print("4. AirQualityBox")
+        choice = input("Choose: ")
           
-            if choice == "1":
-                device = next(d for d in self.devices if d.type == "ThermoNode")
-                device.stop = True
-            elif choice == "2":
-                device = next(d for d in self.devices if d.type == "WindSense")
-                device.stop = True
-            elif choice == "3":
-                device = next(d for d in self.devices if d.type == "RainDetect")
-                device.stop = True
-            elif choice == "4":
-                device = next(d for d in self.devices if d.type == "AirQualityBox")
-                device.stop = True
+        if choice == "1":
+            device = next(d for d in self.devices if d.type == "ThermoNode")
+            device.stop = True
+        elif choice == "2":
+            device = next(d for d in self.devices if d.type == "WindSense")
+            device.stop = True
+        elif choice == "3":
+            device = next(d for d in self.devices if d.type == "RainDetect")
+            device.stop = True
+        elif choice == "4":
+            device = next(d for d in self.devices if d.type == "AirQualityBox")
+            device.stop = True
             
             
     def clear_screen(self):
@@ -256,5 +255,6 @@ class Tester:
 
 tester = Tester()
 tester.menu()
+
 
 
