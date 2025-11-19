@@ -123,22 +123,22 @@ class Server:
                     #print("sending ack")
                     
     def disable_ack(self):
-        if 1:
-            self.clear_screen()
-            print("Select sensor:")
-            print("1. ThermoNode")
-            print("2. WindSense")
-            print("3. RainDetect")
-            print("4. AirQualityBox")
-            choice = input("Choose: ")
-            if choice == "1":
-                self.no_ack_list["ThermoNode"] = 3
-            elif choice == "2":
-                self.no_ack_list["WindSense"] = 3
-            elif choice == "3":
-                self.no_ack_list["RainDetect"] = 3
-            elif choice == "4":
-                self.no_ack_list["AirQualityBox"] = 3
+        
+        self.clear_screen()
+        print("Select sensor:")
+        print("1. ThermoNode")
+        print("2. WindSense")
+        print("3. RainDetect")
+        print("4. AirQualityBox")
+        choice = input("Choose: ")
+        if choice == "1":
+            self.no_ack_list["ThermoNode"] = 3
+        elif choice == "2":
+            self.no_ack_list["WindSense"] = 3
+        elif choice == "3":
+            self.no_ack_list["RainDetect"] = 3
+        elif choice == "4":
+            self.no_ack_list["AirQualityBox"] = 3
                 
     def clear_screen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -176,3 +176,4 @@ class Server:
 
 server = Server()
 server.menu()
+
